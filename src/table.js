@@ -2,6 +2,8 @@ import React from 'react'
 import Icon from 'react-fontawesome'
 import {get, isFunction, isEqual, orderBy} from 'lodash/fp'
 
+export {default as TableColumn} from './tableColumn'
+
 const callOrSelf = (...args) => x => (isFunction(x) ? x(...args) : x)
 
 class Row extends React.Component {
