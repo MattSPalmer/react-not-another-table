@@ -6,6 +6,12 @@ export {default as TableColumn} from './tableColumn'
 
 const callOrSelf = (...args) => x => (isFunction(x) ? x(...args) : x)
 
+const componentType = React.PropTypes.oneOfType([
+  React.PropTypes.func,
+  React.PropTypes.string,
+  React.PropTypes.instanceOf(React.Component),
+])
+
 class Row extends React.Component {
   shouldComponentUpdate(nextProps) {
     return !isEqual(this.props.datum, nextProps.datum)
@@ -55,10 +61,7 @@ class Col extends React.Component {
 Col.propTypes = {
   datum: React.PropTypes.object,
   columnData: React.PropTypes.shape({
-    component: React.PropTypes.oneOfType([
-      React.PropTypes.func,
-      React.PropTypes.instanceOf(React.Component),
-    ]),
+    component: componentType,
     reference: React.PropTypes.string,
     force: React.PropTypes.string,
     label: React.PropTypes.string,
@@ -150,15 +153,20 @@ class Table extends React.Component {
       <Row key={i} datum={d} columns={this.state.columns} rowClass={rowClass} />
     )
     return (
-      <table className={this.props.className || null}>
+      <this.props.tableComponent data={this.props.data} columns={this.state.columns}>
         {this.renderHeaderRow()}
         <tbody>{data.map(toRow)}</tbody>
-      </table>
+      </this.props.tableComponent>
     )
   }
 }
 
+Table.defaultProps = {
+  tableComponent: 'table',
+}
+
 Table.propTypes = {
+  tableComponent: componentType,
   children: React.PropTypes.node,
   data: React.PropTypes.arrayOf(React.PropTypes.object),
   className: React.PropTypes.string,
